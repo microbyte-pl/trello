@@ -1,0 +1,16 @@
+{
+  "name": "Power-Up z Timerem",
+  "description": "Dodaje pole tekstowe i timer w kartach oraz popup z podsumowaniem.",
+  "icon": {
+    "url": "https://example.com/icon.png"
+  },
+  "capabilities": ["card-back-section", "board-buttons"],
+  "author": "Twoja nazwa",
+  "connectors": {
+    "iframe": {
+      "url": "https://twoj-serwer.com/index.html"
+    }
+  },
+  "id": "timer-power-up",
+  "version": "1.0"
+}
