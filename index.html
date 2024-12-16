@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <title>Power-Up</title>
+</head>
+<body>
+  <script>
+    const t = window.TrelloPowerUp.iframe();
+
+    // Przechowywanie wartości lokalnych dla każdej karty
+    const storageKey = 'customFieldText';
+    const timerKey = 'customFieldTimer';
+
+    t.initialize({
+      'card-back-section': function (t, options) {
+        return {
+          title: 'Pole tekstowe i Timer',
+          content: {
+            type: 'iframe',
+            url: t.signUrl('./index.html?card-back=true')
+          }
+        };
+      },
+      'board-buttons': function (t, options) {
+        return [
+          {
+            text: 'Pokaż podsumowanie',
+            callback: async function (t) {
+              const cards = await t.cards('all');
+              const values = [];
+
+              for (let card of cards) {
+                const text = await t.get(card.id, 'shared', storageKey);
+                if (text) values.push(`${card.name}: ${text}`);
+              }
+
+              return t.popup({
+                title: 'Podsumowanie',
+                url: './popup.html',
+                height: 200,
+                args: { values }
+              });
+            }
+          }
+        ];
+      }
+    });
+
+    // Sekcja karty: pole tekstowe i timer
+    if (window.location.search.includes('card-back=true')) {
+      document.body.innerHTML = `
+        <label for="custom-field">Wpisz tekst:</label>
+        <input type="text" id="custom-field" />
+        <button id="toggle-timer">Start Timer</button>
+        <p id="timer-status">Status: Stopped</p>
+      `;
+
+      const input = document.getElementById('custom-field');
+      const toggleTimer = document.getElementById('toggle-timer');
+      const timerStatus = document.getElementById('timer-status');
+
+      t.get('card', 'shared', storageKey).then(value => {
+        input.value = value || '';
+      });
+
+      let timerRunning = false;
+
+      toggleTimer.addEventListener('click', async () => {
+        timerRunning = !timerRunning;
+        if (timerRunning) {
+          timerStatus.textContent = 'Status: Running';
+          await t.set('card', 'shared', timerKey, Date.now());
+        } else {
+          const startTime = await t.get('card', 'shared', timerKey);
+          const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+          timerStatus.textContent = `Status: Stopped (Elapsed: ${elapsed}s)`;
+          await t.remove('card', 'shared', timerKey);
+        }
+      });
+
+      input.addEventListener('input', () => {
+        t.set('card', 'shared', storageKey, input.value);
+      });
+    }
+  </script>
+</body>
+</html>
