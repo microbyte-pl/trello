@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <title>Podsumowanie</title>
+</head>
+<body>
+  <ul id="summary"></ul>
+
+  <script>
+    const t = window.TrelloPowerUp.iframe();
+
+    t.render(() => {
+      const ul = document.getElementById('summary');
+      const { values } = t.arg('values');
+
+      ul.innerHTML = values.map(value => `<li>${value}</li>`).join('');
+    });
+  </script>
+</body>
+</html>
