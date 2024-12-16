@@ -8,7 +8,7 @@
   "author": "Twoja nazwa",
   "connectors": {
     "iframe": {
-      "url": "https://twoj-serwer.com/index.html"
+      "url": "https://raw.githubusercontent.com/microbyte-pl/trello/refs/heads/master/index.html"
     }
   },
   "id": "timer-power-up",
